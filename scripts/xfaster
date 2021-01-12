@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+
+import os
+
+try:
+    import xfaster as xf
+except ImportError as e:
+    pth = os.path.abspath(os.path.dirname(__file__))
+    pth = pth.split("/scripts", 1)[0]
+    if not pth.endswith("xfaster"):
+        msg = """{}
+
+Please follow the setup instructions in xfaster/README.
+""".format(
+            e
+        )
+    else:
+        msg = """{}
+
+Please add the following lines to your ~/.bash_profile:
+
+    export XFASTER_PATH={}
+    source $XFASTER_PATH/scripts/xfaster_env.sh
+
+Then reload your profile by running
+
+    source ~/.bash_profile
+""".format(
+            e, pth
+        )
+    raise ImportError(msg)
+
+# parse arguments
+args = xf.xfaster_parse()
+mode = args.pop("mode")
+
+if mode == "submit":
+    # submit a job
+    script_path = os.path.abspath(__file__)
+    xf.xfaster_submit(script_path=script_path, **args)
+
+elif mode == "run":
+    # run the analysis
+    xf.xfaster_run(**args)

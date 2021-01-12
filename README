@@ -1,0 +1,26 @@
+XFaster implementation by A. Gambrel, A. Rahlin, C. Contaldi.
+
+XFaster is a fast power spectrum and likelihood estimator for CMB datasets.
+It has most recently been used for the SPIDER B-mode polarization results, but is intended to be generically useful for modern CMB observatories.
+An accompanying paper describing the algorithm is expected in February 2021.
+
+scripts:
+    scripts for testing and running the code
+
+data:
+    auxiliary data used by xfaster
+
+xfaster:
+    python package
+
+documentation:
+    documentation on usage, file structure, etc.
+
+To get started, add the following two lines to your .bash_profile:
+
+    export XFASTER_PATH=/path/to/xfaster
+    source $XFASTER_PATH/scripts/xfaster_env.sh
+
+NB: the directory $XFASTER_PATH/xfaster contains the python library code, so
+    the python path needs to point to $XFASTER_PATH, *not* $XFASTER_PATH/xfaster,
+    in order to be able to run `import xfaster` successfully.
