@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>base &#8212; xfaster 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to xfaster’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="contents topic" id="contents">
+<span id="autodoc"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#module-base" id="id3">base</a></p></li>
+<li><p><a class="reference internal" href="#batch-tools" id="id4">batch_tools</a></p></li>
+<li><p><a class="reference internal" href="#output-class" id="id5">output_class</a></p></li>
+<li><p><a class="reference internal" href="#parse-tools" id="id6">parse_tools</a></p></li>
+<li><p><a class="reference internal" href="#xfaster-class" id="id7">xfaster_class</a></p></li>
+<li><p><a class="reference internal" href="#xfaster-exec" id="id8">xfaster_exec</a></p></li>
+<li><p><a class="reference internal" href="#xfaster-tools" id="id9">xfaster_tools</a></p></li>
+</ul>
+</div>
+<div class="section" id="module-base">
+<span id="base"></span><h1><a class="toc-backref" href="#id3">base</a><a class="headerlink" href="#module-base" title="Permalink to this headline">¶</a></h1>
+<p>Logger classes</p>
+<dl class="class">
+<dt id="base.Logger">
+<em class="property">class </em><code class="sig-prename descclassname">base.</code><code class="sig-name descname">Logger</code><span class="sig-paren">(</span><em class="sig-param">verbosity=0</em>, <em class="sig-param">indent=True</em>, <em class="sig-param">logfile=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#Logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.Logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic prioritized logger, extended from M. Hasselfield</p>
+<dl class="method">
+<dt id="base.Logger.format">
+<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">level=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#Logger.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.Logger.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format the input for writing to the logfile.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="base.Logger.get_level">
+<code class="sig-name descname">get_level</code><span class="sig-paren">(</span><em class="sig-param">v</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#Logger.get_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.Logger.get_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="base.Logger.set_logfile">
+<code class="sig-name descname">set_logfile</code><span class="sig-paren">(</span><em class="sig-param">logfile=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#Logger.set_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.Logger.set_logfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the location where logs are written.  If logfile is None,
+log to STDOUT.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="base.Logger.set_verbose">
+<code class="sig-name descname">set_verbose</code><span class="sig-paren">(</span><em class="sig-param">level</em><span class="sig-paren">)</span><a class="headerlink" href="#base.Logger.set_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the verbosity level of the logger.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="base.Logger.set_verbosity">
+<code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><em class="sig-param">level</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#Logger.set_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.Logger.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the verbosity level of the logger.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="base.Logger.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">level=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#Logger.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.Logger.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="base.XFasterConfig">
+<em class="property">class </em><code class="sig-prename descclassname">base.</code><code class="sig-name descname">XFasterConfig</code><span class="sig-paren">(</span><em class="sig-param">defaults=None</em>, <em class="sig-param">default_sec='Uncategorized'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#XFasterConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.XFasterConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>ConfigParser subclass for storing command line options and config.</p>
+<dl class="method">
+<dt id="base.XFasterConfig.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">options</em>, <em class="sig-param">section=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#XFasterConfig.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.XFasterConfig.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update configuration options with a dictionary. Behaves like
+dict.update() for specified section but also clears options of the same
+name from the default section.</p>
+<dl class="simple">
+<dt>options<span class="classifier">dict</span></dt><dd><p>The options to update</p>
+</dd>
+<dt>section<span class="classifier">string, optional</span></dt><dd><p>Name of section to update. Default: self.default_sec</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="base.XFasterConfig.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">fp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#XFasterConfig.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.XFasterConfig.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write an .ini-format representation of the configuration state.
+Keys are stored alphabetically.</p>
+<dl class="simple">
+<dt>fp<span class="classifier">file object</span></dt><dd><p>If None, write to <cite>sys.stdout</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="base.get_func_defaults">
+<code class="sig-prename descclassname">base.</code><code class="sig-name descname">get_func_defaults</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#get_func_defaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.get_func_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dictionary containing the default values for each keyword
+argument of the given function</p>
+<dl class="simple">
+<dt>func<span class="classifier">function or callable</span></dt><dd><p>This function’s keyword arguments will be extracted.</p>
+</dd>
+</dl>
+<p>dict of kwargs and their default values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="base.extract_func_kwargs">
+<code class="sig-prename descclassname">base.</code><code class="sig-name descname">extract_func_kwargs</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">kwargs</em>, <em class="sig-param">pop=False</em>, <em class="sig-param">others_ok=True</em>, <em class="sig-param">warn=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#extract_func_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.extract_func_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract arguments for a given function from a kwargs dictionary</p>
+<dl class="simple">
+<dt>func<span class="classifier">function or callable</span></dt><dd><p>This function’s keyword arguments will be extracted.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Dictionary of keyword arguments from which to extract.
+NOTE: pass the kwargs dict itself, not <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</p>
+</dd>
+<dt>pop<span class="classifier">bool, optional</span></dt><dd><p>Whether to pop matching arguments from kwargs.</p>
+</dd>
+<dt>others_ok<span class="classifier">bool</span></dt><dd><p>If False, an exception will be raised when kwargs contains keys
+that are not keyword arguments of func.</p>
+</dd>
+<dt>warn<span class="classifier">bool</span></dt><dd><p>If True, a warning is issued when kwargs contains keys that are not
+keyword arguments of func.  Use with <cite>others_ok=True</cite>.</p>
+</dd>
+</dl>
+<p>Dict of items from kwargs for which func has matching keyword arguments</p>
+</dd></dl>
+
+</div>
+<div class="section" id="batch-tools">
+<h1><a class="toc-backref" href="#id4">batch_tools</a><a class="headerlink" href="#batch-tools" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="output-class">
+<h1><a class="toc-backref" href="#id5">output_class</a><a class="headerlink" href="#output-class" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="parse-tools">
+<h1><a class="toc-backref" href="#id6">parse_tools</a><a class="headerlink" href="#parse-tools" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="xfaster-class">
+<h1><a class="toc-backref" href="#id7">xfaster_class</a><a class="headerlink" href="#xfaster-class" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="xfaster-exec">
+<h1><a class="toc-backref" href="#id8">xfaster_exec</a><a class="headerlink" href="#xfaster-exec" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="xfaster-tools">
+<h1><a class="toc-backref" href="#id9">xfaster_tools</a><a class="headerlink" href="#xfaster-tools" title="Permalink to this headline">¶</a></h1>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">xfaster</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#batch-tools">batch_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#output-class">output_class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#parse-tools">parse_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#xfaster-class">xfaster_class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#xfaster-exec">xfaster_exec</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#xfaster-tools">xfaster_tools</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to xfaster’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, A. Gambrel, A. Rahlin, C. Contaldi.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/autodoc.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
