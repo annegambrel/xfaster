@@ -8,9 +8,9 @@ import subprocess as sp
 import numpy as np
 import time
 import warnings
-from .xfaster_class import XFaster
-from . import base
-from . import batch_tools as bt
+from xfaster import xfaster_class as xfc
+from xfaster import base
+from xfaster import batch_tools as bt
 
 __all__ = ["xfaster_run", "xfaster_parse", "xfaster_submit", "XFasterJobGroup"]
 
@@ -387,7 +387,7 @@ def xfaster_run(
     config_vars.update(common_opts, "XFaster Common")
 
     # initialize class
-    X = XFaster(config, **common_opts)
+    X = xfc.XFaster(config, **common_opts)
 
     # setup options
     file_opts = dict(
@@ -673,7 +673,7 @@ def xfaster_run(
     X.log("Wall time: {:.2f} s, CPU time: {:.2f} s".format(time_elapsed, cpu_elapsed))
 
 
-xfaster_run.__doc__ = xfaster_run.__doc__.format(checkpoints=XFaster.checkpoints)
+xfaster_run.__doc__ = xfaster_run.__doc__.format(checkpoints=xfc.XFaster.checkpoints)
 
 
 def xfaster_parse(args=None, test=False):
@@ -1026,7 +1026,7 @@ def xfaster_parse(args=None, test=False):
             G,
             "checkpoint",
             short="-c",
-            choices=XFaster.checkpoints,
+            choices=xfc.XFaster.checkpoints,
             help="Checkpoint for recomputing all following stages, "
             "rather than loading from disk.",
         )

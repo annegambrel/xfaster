@@ -15,10 +15,10 @@ import configparser
 from collections import OrderedDict
 from scipy import integrate, stats
 import pickle
-from . import xfaster_tools as xft
-from . import parse_tools as pt
-from . import base
-from . import batch_tools as bt
+from xfaster import xfaster_tools as xft
+from xfaster import parse_tools as pt
+from xfaster import base as base
+from xfaster import batch_tools as bt
 
 __all__ = ["XFaster"]
 
