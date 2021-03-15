@@ -14,7 +14,6 @@
 #
 import os
 import sys
-import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath('../xfaster'))
 sys.path.insert(0, '/home/anne/.pyenv/versions/3.8.2/envs/spider/lib/python3.8/site-packages')
@@ -47,6 +46,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx_rtd_theme',
+    'sphinx.ext.napoleon',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

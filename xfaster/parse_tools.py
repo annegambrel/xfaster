@@ -23,8 +23,19 @@ __all__ = [
 def corr_index(idx, n):
     """
     This gets the index of the auto spectrum when getting all
-    pairwise combinations of n maps, where idx is the index of the
-    map in the list of maps being looped through.
+    pairwise combinations of n maps
+
+    Arguments
+    ---------
+    idx : int
+        The index of the map in the list of maps being looped through.
+    n : int 
+        The number of maps being looped through.
+
+    Returns
+    -------
+    index : int
+        Index of auto spectrum
     """
     return idx * n - idx * (idx - 1) // 2
 
