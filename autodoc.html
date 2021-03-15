@@ -86,12 +86,12 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#batch-tools">batch_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-batch_tools">batch_tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#output-class">output_class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#parse-tools">parse_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-parse_tools">parse_tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#xfaster-class">xfaster_class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#xfaster-exec">xfaster_exec</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#xfaster-tools">xfaster_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-xfaster_tools">xfaster_tools</a></li>
 </ul>
 
             
@@ -162,17 +162,17 @@
   <div class="contents topic" id="contents">
 <span id="autodoc"></span><p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#module-base" id="id3">base</a></p></li>
-<li><p><a class="reference internal" href="#batch-tools" id="id4">batch_tools</a></p></li>
-<li><p><a class="reference internal" href="#output-class" id="id5">output_class</a></p></li>
-<li><p><a class="reference internal" href="#parse-tools" id="id6">parse_tools</a></p></li>
-<li><p><a class="reference internal" href="#xfaster-class" id="id7">xfaster_class</a></p></li>
-<li><p><a class="reference internal" href="#xfaster-exec" id="id8">xfaster_exec</a></p></li>
-<li><p><a class="reference internal" href="#xfaster-tools" id="id9">xfaster_tools</a></p></li>
+<li><p><a class="reference internal" href="#module-base" id="id5">base</a></p></li>
+<li><p><a class="reference internal" href="#module-batch_tools" id="id6">batch_tools</a></p></li>
+<li><p><a class="reference internal" href="#output-class" id="id7">output_class</a></p></li>
+<li><p><a class="reference internal" href="#module-parse_tools" id="id8">parse_tools</a></p></li>
+<li><p><a class="reference internal" href="#xfaster-class" id="id9">xfaster_class</a></p></li>
+<li><p><a class="reference internal" href="#xfaster-exec" id="id10">xfaster_exec</a></p></li>
+<li><p><a class="reference internal" href="#module-xfaster_tools" id="id11">xfaster_tools</a></p></li>
 </ul>
 </div>
 <div class="section" id="module-base">
-<span id="base"></span><h1><a class="toc-backref" href="#id3">base</a><a class="headerlink" href="#module-base" title="Permalink to this headline">¶</a></h1>
+<span id="base"></span><h1><a class="toc-backref" href="#id5">base</a><a class="headerlink" href="#module-base" title="Permalink to this headline">¶</a></h1>
 <p>Logger classes</p>
 <dl class="class">
 <dt id="base.Logger">
@@ -294,23 +294,486 @@ keyword arguments of func.  Use with <cite>others_ok=True</cite>.</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="batch-tools">
-<h1><a class="toc-backref" href="#id4">batch_tools</a><a class="headerlink" href="#batch-tools" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-batch_tools">
+<span id="batch-tools"></span><h1><a class="toc-backref" href="#id6">batch_tools</a><a class="headerlink" href="#module-batch_tools" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="batch_tools.get_job_logfile">
+<code class="sig-prename descclassname">batch_tools.</code><code class="sig-name descname">get_job_logfile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#get_job_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.get_job_logfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a path to use for unifile log, based on job environment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="batch_tools.batch_sub">
+<code class="sig-prename descclassname">batch_tools.</code><code class="sig-name descname">batch_sub</code><span class="sig-paren">(</span><em class="sig-param">cmd</em>, <em class="sig-param">name=None</em>, <em class="sig-param">mem=None</em>, <em class="sig-param">nodes=None</em>, <em class="sig-param">node_list=None</em>, <em class="sig-param">ppn=None</em>, <em class="sig-param">cput=None</em>, <em class="sig-param">wallt=None</em>, <em class="sig-param">output=None</em>, <em class="sig-param">error=None</em>, <em class="sig-param">queue=None</em>, <em class="sig-param">dep_afterok=None</em>, <em class="sig-param">workdir=None</em>, <em class="sig-param">batch_args=[]</em>, <em class="sig-param">omp_threads=None</em>, <em class="sig-param">mpi_procs=None</em>, <em class="sig-param">mpi_args=''</em>, <em class="sig-param">env_script=None</em>, <em class="sig-param">env=None</em>, <em class="sig-param">nice=0</em>, <em class="sig-param">echo=True</em>, <em class="sig-param">delete=True</em>, <em class="sig-param">submit=True</em>, <em class="sig-param">scheduler='pbs'</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">exclude=None</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#batch_sub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.batch_sub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and submit a SLURM or PBS job.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cmd</strong> (<em>string</em><em> or </em><em>list of strings</em>) – A command sequence to run via SLURM or PBS.
+The command will be inserted into a qsub submission script
+with all of the options specified in the remaining arguments.</p></li>
+<li><p><strong>name</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the job.</p></li>
+<li><p><strong>mem</strong> (<em>float</em><em> or </em><em>string</em><em>, </em><em>optional</em>) – Amount of memory to request for the job. float values in GB.
+Or pass a string (eg ‘4gb’) to use directly.</p></li>
+<li><p><strong>nodes</strong> (<em>int</em><em> or </em><em>string</em><em>, </em><em>optional</em>) – Number of nodes to use in job
+If a string, will be passed as-is to PBS -l node= resource
+If using SLURM and a string, will overwrite node_list if None</p></li>
+<li><p><strong>node_list</strong> (<em>string</em><em> or </em><em>list of strings</em>) – List of nodes that can be used for job. SLURM-only.</p></li>
+<li><p><strong>ppn</strong> (<em>int</em><em>, </em><em>optional</em>) – Numper of processes per node</p></li>
+<li><p><strong>cput</strong> (<em>string</em><em> or </em><em>float</em><em> or </em><em>datetime.timedelta</em><em>, </em><em>optional</em>) – Amount of CPU time requested.
+String values should be in the format HH:MM:SS, e.g. ‘10:00:00’.
+Numerical values are interpreted as a number of hours.</p></li>
+<li><p><strong>wallt</strong> (<em>string</em><em> or </em><em>float</em><em> or </em><em>datetime.timedelta</em><em>, </em><em>optional</em>) – Amount of wall clock time requested.
+String values should be in the format HH:MM:SS, e.g. ‘10:00:00’.
+Numerical values are interpreted as a number of hours.</p></li>
+<li><p><strong>output</strong> (<em>string</em><em>, </em><em>optional</em>) – PBS standard output filename.</p></li>
+<li><p><strong>error</strong> (<em>string</em><em>, </em><em>optional</em>) – PBS error output filename.</p></li>
+<li><p><strong>queue</strong> (<em>string</em><em>, </em><em>optional</em>) – The name of the queue to which to submit jobs</p></li>
+<li><p><strong>dep_afterok</strong> (<em>string</em><em> or </em><em>list of strings</em>) – Dependency. Job ID (or IDs) on which to wait for successful completion,
+before starting this job</p></li>
+<li><p><strong>workdir</strong> (<em>string</em><em>, </em><em>optional</em>) – Directory from where the script will be submitted.
+This is where the output and error files will be created
+by default.  Default: current directory.</p></li>
+<li><p><strong>batch_args</strong> (<em>string</em><em> or </em><em>list of strings</em><em>, </em><em>optional</em>) – Any additional arguments to pass to slurm/pbs.</p></li>
+<li><p><strong>omp_threads</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of OpenMP threads to use per process</p></li>
+<li><p><strong>mpi_procs</strong> (<em>int</em>) – Number of MPI processes to use.
+<cite>mpirun</cite> calls will be added to all lines of cmd as needed.
+If cmd contains <cite>mpirun</cite> or <cite>mpiexec</cite>, this does nothing.</p></li>
+<li><p><strong>mpi_args</strong> (<em>string</em>) – Additional command line arguments for inserted <cite>mpirun</cite> commands.
+If cmd contains <cite>mpirun</cite> or <cite>mpiexec</cite>, this does nothing.</p></li>
+<li><p><strong>env_script</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to script to source during job script preamble
+For loading modules, setting environment variables, etc</p></li>
+<li><p><strong>env</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dictionary of environment variables to set in job script</p></li>
+<li><p><strong>nice</strong> (<em>int</em><em>, </em><em>optional</em>) – Adjust scheduling priority (SLURM only). Range from -5000 (highest
+priority) to 5000 (lowest priority).
+Note: actual submitted –nice value is 5000 higher, since negative
+values require special privilege.</p></li>
+<li><p><strong>echo</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use bash “set -x” in job script to echo commands to stdout.</p></li>
+<li><p><strong>delete</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, delete the submit script upon job submission.</p></li>
+<li><p><strong>submit</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True (default) submit the job script once create. Will override the
+default option when False, to keep the script</p></li>
+<li><p><strong>scheduler</strong> (<em>string</em><em>, </em><em>optional</em>) – Which scheduler system to write a script for. One of “pbs” or “slurm”</p></li>
+<li><p><strong>debug</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print the contents of the job script to stdout for debugging.</p></li>
+<li><p><strong>exclude</strong> (<em>string</em><em> or </em><em>list of strings</em>) – List of nodes that will be excluded for job. SLURM-only.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print the working directory, and the job ID if submitted successfully.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>jobid</strong> – The ID of the submitted job.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jobid</span> <span class="o">=</span> <span class="n">batch_sub</span><span class="p">(</span><span class="s2">&quot;echo Hello&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;testing&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="s2">&quot;1:ppn=1&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">cput</span><span class="o">=</span><span class="s1">&#39;1:00:00&#39;</span><span class="p">,</span> <span class="n">mem</span><span class="o">=</span><span class="s1">&#39;1gb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">jobid</span>
+<span class="go">221114.feynman.princeton.edu</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;testing.o221114&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="go">Hello</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="batch_tools.batch_group">
+<code class="sig-prename descclassname">batch_tools.</code><code class="sig-name descname">batch_group</code><span class="sig-paren">(</span><em class="sig-param">cmds</em>, <em class="sig-param">group_by=1</em>, <em class="sig-param">serial=False</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#batch_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.batch_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and submit SLURM or PBS job scripts for a group of similar commands. The
+commands can be grouped together into larger single jobs that run them in
+parallel on multiple processors on a node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cmds</strong> (<em>list</em>) – The commands to run.
+The commands themselves should be a string, or a list of tokens, as
+per the batch_sub function</p></li>
+<li><p><strong>group_by</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of commands to group together into a single job. Does not
+balance well when len(cmds)%group_by != 0
+Eg. on scinet use group_by=8 to efficiently use whole nodes</p></li>
+<li><p><strong>serial</strong> (<em>bool</em><em>, </em><em>optional</em>) – Set to True to run cmds sequentially, rather than starting them all in
+parallel. This will also work with MPI/OpenMP parallel jobs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>arguments are passed on to the batch_sub function.</strong> (<em>Keyword</em>) – </p></li>
+<li><p><strong>will be applied to EACH job. For example</strong><strong>, </strong><strong>using nodes=&quot;1</strong> (<em>These</em>) – </p></li>
+<li><p><strong>group_by=8 and 16 elements in cmds will result in 2 jobs</strong><strong>, </strong><strong>each using</strong> (<em>with</em>) – </p></li>
+<li><p><strong>processors on 1 node.</strong> (<em>8</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="batch_tools.JobArgumentParser">
+<em class="property">class </em><code class="sig-prename descclassname">batch_tools.</code><code class="sig-name descname">JobArgumentParser</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">mem=None</em>, <em class="sig-param">time=None</em>, <em class="sig-param">workdir=None</em>, <em class="sig-param">outkey=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#JobArgumentParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.JobArgumentParser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="batch_tools.JobArgumentParser.add_arguments">
+<code class="sig-name descname">add_arguments</code><span class="sig-paren">(</span><em class="sig-param">parser=None</em>, <em class="sig-param">add_group=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#JobArgumentParser.add_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.JobArgumentParser.add_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add job submission arguments to an argparse.ArgumentParser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parser</strong> (<em>argparse.ArgumentParser</em>) – The parser to which to add arguments. If None, a new parser will
+be made and returned.</p></li>
+<li><p><strong>add_group</strong> (<em>bool</em><em> or </em><em>string</em>) – Whether to add job submit options in an argument group.
+If a string, use as description for the group.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>parser, the argparse.ArgumentParser</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="batch_tools.JobArgumentParser.pop_job_opts">
+<code class="sig-name descname">pop_job_opts</code><span class="sig-paren">(</span><em class="sig-param">args_dict</em>, <em class="sig-param">pop_submit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#JobArgumentParser.pop_job_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.JobArgumentParser.pop_job_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop all of the job-related options from a dictionary of arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args_dict</strong> (<em>dict</em>) – The dictionary to pop from</p></li>
+<li><p><strong>pop_submit</strong> (<em>bool</em>) – Whether to also pop an argument named “submit”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="batch_tools.JobArgumentParser.set_job_opts">
+<code class="sig-name descname">set_job_opts</code><span class="sig-paren">(</span><em class="sig-param">args</em>, <em class="sig-param">load_defaults=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#JobArgumentParser.set_job_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.JobArgumentParser.set_job_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set job submission options based on parsed arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>argparse.Namespace</em><em> or </em><em>dict</em>) – The parsed command line arguments (from
+argparse.ArgumentParser.parse_args()).</p></li>
+<li><p><strong>load_defaults</strong> (<em>bool</em>) – Whether to automatically load the default value for options</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>be passed to update.</strong> (<em>Will</em>) – </p></li>
+<li><p><strong>be used to override particular job submission options. Any argument</strong> (<em>Can</em>) – </p></li>
+<li><p><strong>the batch_sub</strong><strong> or </strong><strong>batch_group functions can be overridden in this way.</strong> (<em>to</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="batch_tools.JobArgumentParser.submit">
+<code class="sig-name descname">submit</code><span class="sig-paren">(</span><em class="sig-param">jobs</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#JobArgumentParser.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.JobArgumentParser.submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit jobs based on the parsed arguments. Must be called after
+set_job_opts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>jobs</strong> (<em>string</em><em> or </em><em>list of strings</em>) – The job(s) to submit.</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>be passed to update.</strong> (<em>Will</em>) – </p></li>
+<li><p><strong>be used to override particular job submission options. Any argument</strong> (<em>Can</em>) – </p></li>
+<li><p><strong>the batch</strong><strong> or </strong><strong>batch_group functions can be overridden in this way.</strong> (<em>to</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List of job IDs for submitted jobs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="batch_tools.JobArgumentParser.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/batch_tools.html#JobArgumentParser.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#batch_tools.JobArgumentParser.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update particular job submission options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>be used to override particular job submission options. Any argument</strong> (<em>Can</em>) – </p></li>
+<li><p><strong>the batch_sub</strong><strong> or </strong><strong>batch_group functions can be overridden in this way.</strong> (<em>to</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="output-class">
-<h1><a class="toc-backref" href="#id5">output_class</a><a class="headerlink" href="#output-class" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id7">output_class</a><a class="headerlink" href="#output-class" title="Permalink to this headline">¶</a></h1>
 </div>
-<div class="section" id="parse-tools">
-<h1><a class="toc-backref" href="#id6">parse_tools</a><a class="headerlink" href="#parse-tools" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-parse_tools">
+<span id="parse-tools"></span><h1><a class="toc-backref" href="#id8">parse_tools</a><a class="headerlink" href="#module-parse_tools" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="parse_tools.parse_data">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">parse_data</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">field</em>, <em class="sig-param">indices=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#parse_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.parse_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look for a field in some data, return as a dictionary with
+descriptive keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>str</em><em> or </em><em>dict</em>) – Either the path to an npz file on disk or a loaded npz dict</p></li>
+<li><p><strong>field</strong> (<em>str</em>) – <p>Which key in data to return as a dictionary.
+Options: bin_def, cls_residual, cbl, qb, fqb, qb_transfer,</p>
+<blockquote>
+<div><p>cb, dcb, dcb_nosampvar, ellb, qb2cb, cls_obs,
+cls_fg, cls_signal, cls_model, cls_noise, cls_data,
+cls_shape, wls, w1, w2, w4, fsky, kern, pkern,
+mkern, xkern, beam_windows, Dmat_obs, Dmat1,
+dSdqb_mat1</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>indices</strong> (<em>str</em>) – If given, get the coordinates of this subfield in the original
+bin_def matrix and return a boolean mask where that subfield
+is indexed. Used internally</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.dict_to_arr">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">dict_to_arr</code><span class="sig-paren">(</span><em class="sig-param">d</em>, <em class="sig-param">out=None</em>, <em class="sig-param">flatten=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#dict_to_arr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.dict_to_arr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform ordered dict into an array, if all items are same shape</p>
+<p>If not all items are the same shape, eg, for qb, or if flatten=True,
+flatten everything into a vector</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.arr_to_dict">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">arr_to_dict</code><span class="sig-paren">(</span><em class="sig-param">arr</em>, <em class="sig-param">ref_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#arr_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.arr_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform an array of data into a dictionary keyed by the same keys in
+ref_dict, with data divided into chunks of the same length as in ref_dict.
+Requires that the length of the array is the sum of the lengths of the
+arrays in each entry of ref_dict.  The other dimensions of the input
+array and reference dict can differ.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.change_dict_keys">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">change_dict_keys</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">keys</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#change_dict_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.change_dict_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each key in dat that is actually an index, replace with
+key that corresponds to that index– needed for dicts that have to
+be constructed without knowing what maps are called.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.unique_tags">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">unique_tags</code><span class="sig-paren">(</span><em class="sig-param">tags</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#unique_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.unique_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>If map tags are repeated (eg, two 150 maps in different chunk
+subdirectories), return a list modifying them with an index</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.tag_pairs">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">tag_pairs</code><span class="sig-paren">(</span><em class="sig-param">tags</em>, <em class="sig-param">index=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#tag_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.tag_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an OrderedDict whose keys are pairs of tags in the format “tag1:tag2”
+and whose values are a tuple of the two tags used to construct each key,
+or a tuple of the indices of the two tags in the original tag list, if
+<cite>index</cite> is True.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tag_pairs</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+<span class="go">OrderedDict([(&#39;a:a&#39;, (&#39;a&#39;, &#39;a&#39;)), (&#39;a:b&#39;, (&#39;a&#39;, &#39;b&#39;)), (&#39;b:b&#39;, (&#39;b&#39;, &#39;b&#39;))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tag_pairs</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">OrderedDict([(&#39;a:a&#39;, (0, 0)), (&#39;a:b&#39;, (0, 1)), (&#39;b:b&#39;, (1, 1))])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.dict_to_index">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">dict_to_index</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#dict_to_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.dict_to_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a dictionary of (start, stop) indices that correspond to the
+location of each sub-array when the dict is converted to a single array
+using <cite>dict_to_arr</cite>.</p>
+<p>For example, use this function to index into a (nbins, nbins) array:</p>
+<blockquote>
+<div><p>bin_index = dict_to_index(bin_def)</p>
+<p># extract TT bins from fisher matrix
+sl_tt = slice(<a href="#id3"><span class="problematic" id="id4">*</span></a>bin_index[‘cmb_tt’])
+fisher_tt = fisher[sl_tt, sl_tt]</p>
+<p># extract all CMB bins from fisher matrix
+sl_cmb = slice(bin_index[‘cmb_tt’][0], bin_index[‘cmb_tb’][1])
+fisher_cmb = fisher[sl_cmb, sl_cmb]</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.dict_to_dmat">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">dict_to_dmat</code><span class="sig-paren">(</span><em class="sig-param">dmat_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#dict_to_dmat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.dict_to_dmat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take a dmat dictionary and return the right shaped Dmat matrix:
+(Nmaps * 3, Nmaps * 3, lmax + 1) if pol else
+(Nmaps, Nmaps, lmax + 1)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.dict_to_dsdqb_mat">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">dict_to_dsdqb_mat</code><span class="sig-paren">(</span><em class="sig-param">dsdqb_dict</em>, <em class="sig-param">bin_def</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#dict_to_dsdqb_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.dict_to_dsdqb_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take a dSdqb dictionary and return the right shaped dSdqb matrix:
+(Nmaps * 3, Nmaps * 3, nbins_cmb+nbins_fg+nbins_res, lmax + 1) if pol
+else first two dimensions are Nmaps.</p>
+<p>If gmat is given, the terms in the resulting matrix are multiplied by the
+appriopriate mode density term.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.load_and_parse">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">load_and_parse</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#load_and_parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.load_and_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a .npz data file from disk and parse all the fields it contains.</p>
+<p>Returns a dictionary of parsed fields.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.corr_index">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">corr_index</code><span class="sig-paren">(</span><em class="sig-param">idx</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#corr_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.corr_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>This gets the index of the auto spectrum when getting all
+pairwise combinations of n maps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>idx</strong> (<em>int</em>) – The index of the map in the list of maps being looped through.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – The number of maps being looped through.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>index</strong> – Index of auto spectrum</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.num_maps">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">num_maps</code><span class="sig-paren">(</span><em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#num_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.num_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns how many maps there are if there are n total cross spectra.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_tools.num_corr">
+<code class="sig-prename descclassname">parse_tools.</code><code class="sig-name descname">num_corr</code><span class="sig-paren">(</span><em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_tools.html#num_corr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_tools.num_corr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns how many cross spectra there are if there are n total maps.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="xfaster-class">
-<h1><a class="toc-backref" href="#id7">xfaster_class</a><a class="headerlink" href="#xfaster-class" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id9">xfaster_class</a><a class="headerlink" href="#xfaster-class" title="Permalink to this headline">¶</a></h1>
 </div>
 <div class="section" id="xfaster-exec">
-<h1><a class="toc-backref" href="#id8">xfaster_exec</a><a class="headerlink" href="#xfaster-exec" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id10">xfaster_exec</a><a class="headerlink" href="#xfaster-exec" title="Permalink to this headline">¶</a></h1>
 </div>
-<div class="section" id="xfaster-tools">
-<h1><a class="toc-backref" href="#id9">xfaster_tools</a><a class="headerlink" href="#xfaster-tools" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-xfaster_tools">
+<span id="xfaster-tools"></span><h1><a class="toc-backref" href="#id11">xfaster_tools</a><a class="headerlink" href="#module-xfaster_tools" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="xfaster_tools.ThreeJC_2">
+<code class="sig-prename descclassname">xfaster_tools.</code><code class="sig-name descname">ThreeJC_2</code><span class="sig-paren">(</span><em class="sig-param">l2i</em>, <em class="sig-param">m2i</em>, <em class="sig-param">l3i</em>, <em class="sig-param">m3i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xfaster_tools.html#ThreeJC_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xfaster_tools.ThreeJC_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wigner 3j symbols</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="xfaster_tools.get_camb_cl">
+<code class="sig-prename descclassname">xfaster_tools.</code><code class="sig-name descname">get_camb_cl</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">lmax</em>, <em class="sig-param">nt=None</em>, <em class="sig-param">spec='total'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xfaster_tools.html#get_camb_cl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xfaster_tools.get_camb_cl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute camb spectrum with tensors and lensing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em>) – Tensor-to-scalar ratio</p></li>
+<li><p><strong>lmax</strong> (<em>int</em>) – Maximum ell for which to compute spectra</p></li>
+<li><p><strong>nt</strong> (<em>scalar</em><em>, </em><em>optional</em>) – Tensor spectral index.  If not supplied, assumes
+slow-roll consistency relation.</p></li>
+<li><p><strong>spec</strong> (<em>string</em><em>, </em><em>optional</em>) – Spectrum component to return.  Can be ‘total’, ‘unlensed_total’,
+‘unlensed_scalar’, ‘lensed_scalar’, ‘tensor’, ‘lens_potential’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cls</strong> – Array of spectra of shape (lmax + 1, nspec), including the
+ell*(ell+1)/2/pi scaling. Diagonal ordering (TT, EE, BB, TE).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="xfaster_tools.expand_qb">
+<code class="sig-prename descclassname">xfaster_tools.</code><code class="sig-name descname">expand_qb</code><span class="sig-paren">(</span><em class="sig-param">qb</em>, <em class="sig-param">bin_def</em>, <em class="sig-param">lmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xfaster_tools.html#expand_qb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xfaster_tools.expand_qb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand a qb-type array to an ell-by-ell spectrum using bin_def.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qb</strong> (<em>array_like</em><em>, </em><em>(</em><em>nbins</em><em>,</em><em>)</em>) – Array of bandpower deviations</p></li>
+<li><p><strong>bin_def</strong> (<em>array_like</em><em>, </em><em>(</em><em>nbins</em><em>, </em><em>2</em><em>)</em>) – Array of bin edges for each bin</p></li>
+<li><p><strong>lmax</strong> (<em>int</em><em>, </em><em>optional</em>) – If supplied, limit the output spectrum to this value.
+Otherwise the output spectrum extends to include the last bin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cl</strong> – Array of expanded bandpowers</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like, (lmax + 1,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="xfaster_tools.bin_spec">
+<code class="sig-prename descclassname">xfaster_tools.</code><code class="sig-name descname">bin_spec</code><span class="sig-paren">(</span><em class="sig-param">qb</em>, <em class="sig-param">cls_shape</em>, <em class="sig-param">bin_def</em>, <em class="sig-param">inv_fish=None</em>, <em class="sig-param">tophat=False</em>, <em class="sig-param">lfac=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xfaster_tools.html#bin_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xfaster_tools.bin_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute binned output spectra and covariances by averaging the shape
+spectrum over each bin, and applying the appropriate <cite>qb</cite> bandpower
+amplitude.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qb</strong> (<em>dict</em>) – Bandpower amplitudes for each spectrum bin.</p></li>
+<li><p><strong>cls_shape</strong> (<em>dict</em>) – Shape spectrum</p></li>
+<li><p><strong>bin_def</strong> (<em>dict</em>) – Bin definition dictionary</p></li>
+<li><p><strong>inv_fish</strong> (<em>array_like</em><em>, </em><em>(</em><em>nbins</em><em>, </em><em>nbins</em><em>)</em>) – Inverse fisher matrix for computing the bin errors and covariance.  If
+not supplied, these are not computed.</p></li>
+<li><p><strong>tophat</strong> (<em>bool</em>) – If True, compute binned bandpowers using a tophat weight.  Otherwise a
+logarithmic ell-space weighting is applied.</p></li>
+<li><p><strong>lfac</strong> (<em>bool</em>) – If False, return binned C_l spectrum rather than the default D_l</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>cb</strong> (<em>dict of arrays</em>) – Binned spectrum</p></li>
+<li><p><strong>dcb</strong> (<em>dict of arrays</em>) – Binned spectrum error, if <cite>inv_fish</cite> is not None</p></li>
+<li><p><strong>ellb</strong> (<em>dict of arrays</em>) – Average bin center</p></li>
+<li><p><strong>cov</strong> (<em>array_like, (nbins, nbins)</em>) – Binned spectrum covariance, if <cite>inv_fish</cite> is not None</p></li>
+<li><p><strong>qb2cb</strong> (<em>dict</em>) – The conversion factor from <cite>qb</cite> to <cite>cb</cite>, computed by averaging over the
+input shape spectrum.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="xfaster_tools.scale_dust">
+<code class="sig-prename descclassname">xfaster_tools.</code><code class="sig-name descname">scale_dust</code><span class="sig-paren">(</span><em class="sig-param">freq0</em>, <em class="sig-param">freq1</em>, <em class="sig-param">ref_freq</em>, <em class="sig-param">beta</em>, <em class="sig-param">delta_beta=None</em>, <em class="sig-param">deriv=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xfaster_tools.html#scale_dust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xfaster_tools.scale_dust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the factor by which you must dividide the cross spectrum from maps of
+frequencies freq0 and freq1 to match the dust power at ref_freq given
+spectra index beta.</p>
+<p>If deriv is True, return the frequency scaling at the reference beta,
+and the first derivative w.r.t. beta.</p>
+<p>Otherwise if delta_beta is given, return the scale factor adjusted
+for a linearized offset delta_beta from the reference beta.</p>
+</dd></dl>
+
 </div>
 
 

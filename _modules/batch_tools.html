@@ -1,0 +1,977 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>batch_tools &mdash; xfaster 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xfaster
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html">base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#module-batch_tools">batch_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#output-class">output_class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#module-parse_tools">parse_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#xfaster-class">xfaster_class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#xfaster-exec">xfaster_exec</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#module-xfaster_tools">xfaster_tools</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xfaster</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>batch_tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for batch_tools</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">argparse</span> <span class="k">as</span> <span class="nn">ap</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get_job_logfile&quot;</span><span class="p">,</span> <span class="s2">&quot;batch_sub&quot;</span><span class="p">,</span> <span class="s2">&quot;batch_group&quot;</span><span class="p">,</span> <span class="s2">&quot;JobArgumentParser&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_job_logfile"><a class="viewcode-back" href="../autodoc.html#batch_tools.get_job_logfile">[docs]</a><span class="k">def</span> <span class="nf">get_job_logfile</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a path to use for unifile log, based on job environment</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PBS_O_WORKDIR&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PBS_ENVIRONMENT&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;PBS_INTERACTIVE&quot;</span><span class="p">:</span>
+            <span class="n">workdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PBS_O_WORKDIR&quot;</span><span class="p">)</span>
+            <span class="n">jobname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PBS_JOBNAME&quot;</span><span class="p">)</span>
+            <span class="n">jobid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PBS_JOBID&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">logfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workdir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.u</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">jobid</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logfile</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SLURM_SUBMIT_DIR&quot;</span><span class="p">):</span>
+        <span class="n">workdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SLURM_SUBMIT_DIR&quot;</span><span class="p">)</span>
+        <span class="n">jobname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SLURM_JOB_NAME&quot;</span><span class="p">)</span>
+        <span class="n">jobid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SLURM_JOB_ID&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">jobname</span> <span class="o">==</span> <span class="s2">&quot;bash&quot;</span><span class="p">:</span>
+            <span class="n">logfile</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workdir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.uni&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">jobid</span><span class="p">))</span>
+    <span class="c1"># TODO generate different logs for multiple processes in same job?</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logfile</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">logfile</span></div>
+
+
+<span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format a time to string for use by qsub.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    t : datetime.timedelta object or float</span>
+<span class="sd">        The time for the job.</span>
+<span class="sd">        If floating point, will be interpreted in hours</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;([0-9]+):([0-9]</span><span class="si">{2}</span><span class="s2">):([0-9]</span><span class="si">{2}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unable to parse qsub time string&quot;</span><span class="p">)</span>
+        <span class="n">hh</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">hh</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">mm</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="n">ss</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;qsub time must be positive&quot;</span><span class="p">)</span>
+    <span class="n">hours</span><span class="p">,</span> <span class="n">rem</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">86400</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
+    <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">rem</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{:d}</span><span class="s2">:</span><span class="si">{:02d}</span><span class="s2">:</span><span class="si">{:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="batch_sub"><a class="viewcode-back" href="../autodoc.html#batch_tools.batch_sub">[docs]</a><span class="k">def</span> <span class="nf">batch_sub</span><span class="p">(</span>
+    <span class="n">cmd</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">mem</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">nodes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">node_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ppn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">cput</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">wallt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">queue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dep_afterok</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">workdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_args</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">omp_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">mpi_procs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">mpi_args</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">env_script</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">env</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">nice</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">echo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">submit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">scheduler</span><span class="o">=</span><span class="s2">&quot;pbs&quot;</span><span class="p">,</span>
+    <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create and submit a SLURM or PBS job.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    cmd : string or list of strings</span>
+<span class="sd">        A command sequence to run via SLURM or PBS.</span>
+<span class="sd">        The command will be inserted into a qsub submission script</span>
+<span class="sd">        with all of the options specified in the remaining arguments.</span>
+<span class="sd">    name : string, optional</span>
+<span class="sd">        Name of the job.</span>
+<span class="sd">    mem : float or string, optional</span>
+<span class="sd">        Amount of memory to request for the job. float values in GB.</span>
+<span class="sd">        Or pass a string (eg &#39;4gb&#39;) to use directly.</span>
+<span class="sd">    nodes : int or string, optional</span>
+<span class="sd">        Number of nodes to use in job</span>
+<span class="sd">        If a string, will be passed as-is to PBS -l node= resource</span>
+<span class="sd">        If using SLURM and a string, will overwrite node_list if None</span>
+<span class="sd">    node_list : string or list of strings</span>
+<span class="sd">        List of nodes that can be used for job. SLURM-only.</span>
+<span class="sd">    ppn : int, optional</span>
+<span class="sd">        Numper of processes per node</span>
+<span class="sd">    cput : string or float or datetime.timedelta, optional</span>
+<span class="sd">        Amount of CPU time requested.</span>
+<span class="sd">        String values should be in the format HH:MM:SS, e.g. &#39;10:00:00&#39;.</span>
+<span class="sd">        Numerical values are interpreted as a number of hours.</span>
+<span class="sd">    wallt : string or float or datetime.timedelta, optional</span>
+<span class="sd">        Amount of wall clock time requested.</span>
+<span class="sd">        String values should be in the format HH:MM:SS, e.g. &#39;10:00:00&#39;.</span>
+<span class="sd">        Numerical values are interpreted as a number of hours.</span>
+<span class="sd">    output : string, optional</span>
+<span class="sd">        PBS standard output filename.</span>
+<span class="sd">    error : string, optional</span>
+<span class="sd">        PBS error output filename.</span>
+<span class="sd">    queue : string, optional</span>
+<span class="sd">        The name of the queue to which to submit jobs</span>
+<span class="sd">    dep_afterok : string or list of strings</span>
+<span class="sd">        Dependency. Job ID (or IDs) on which to wait for successful completion,</span>
+<span class="sd">        before starting this job</span>
+<span class="sd">    workdir : string, optional</span>
+<span class="sd">        Directory from where the script will be submitted.</span>
+<span class="sd">        This is where the output and error files will be created</span>
+<span class="sd">        by default.  Default: current directory.</span>
+<span class="sd">    batch_args : string or list of strings, optional</span>
+<span class="sd">        Any additional arguments to pass to slurm/pbs.</span>
+<span class="sd">    omp_threads : int, optional</span>
+<span class="sd">        Number of OpenMP threads to use per process</span>
+<span class="sd">    mpi_procs : int</span>
+<span class="sd">        Number of MPI processes to use.</span>
+<span class="sd">        `mpirun` calls will be added to all lines of cmd as needed.</span>
+<span class="sd">        If cmd contains `mpirun` or `mpiexec`, this does nothing.</span>
+<span class="sd">    mpi_args : string</span>
+<span class="sd">        Additional command line arguments for inserted `mpirun` commands.</span>
+<span class="sd">        If cmd contains `mpirun` or `mpiexec`, this does nothing.</span>
+<span class="sd">    env_script : string, optional</span>
+<span class="sd">        Path to script to source during job script preamble</span>
+<span class="sd">        For loading modules, setting environment variables, etc</span>
+<span class="sd">    env : dict, optional</span>
+<span class="sd">        Dictionary of environment variables to set in job script</span>
+<span class="sd">    nice : int, optional</span>
+<span class="sd">        Adjust scheduling priority (SLURM only). Range from -5000 (highest</span>
+<span class="sd">        priority) to 5000 (lowest priority).</span>
+<span class="sd">        Note: actual submitted --nice value is 5000 higher, since negative</span>
+<span class="sd">        values require special privilege.</span>
+<span class="sd">    echo : bool, optional</span>
+<span class="sd">        Whether to use bash &quot;set -x&quot; in job script to echo commands to stdout.</span>
+<span class="sd">    delete : bool, optional</span>
+<span class="sd">        If True, delete the submit script upon job submission.</span>
+<span class="sd">    submit : bool, optional</span>
+<span class="sd">        If True (default) submit the job script once create. Will override the</span>
+<span class="sd">        default option when False, to keep the script</span>
+<span class="sd">    scheduler : string, optional</span>
+<span class="sd">        Which scheduler system to write a script for. One of &quot;pbs&quot; or &quot;slurm&quot;</span>
+<span class="sd">    debug : bool, optional</span>
+<span class="sd">        If True, print the contents of the job script to stdout for debugging.</span>
+<span class="sd">    exclude : string or list of strings</span>
+<span class="sd">        List of nodes that will be excluded for job. SLURM-only.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Print the working directory, and the job ID if submitted successfully.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    jobid : string</span>
+<span class="sd">        The ID of the submitted job.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; jobid = batch_sub(&quot;echo Hello&quot;, name=&quot;testing&quot;, nodes=&quot;1:ppn=1&quot;,</span>
+<span class="sd">    ... cput=&#39;1:00:00&#39;, mem=&#39;1gb&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print jobid</span>
+<span class="sd">    221114.feynman.princeton.edu</span>
+<span class="sd">    &gt;&gt;&gt; print open(&#39;testing.o221114&#39;,&#39;r&#39;).read()</span>
+<span class="sd">    Hello</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">mem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mem</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">mem</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">mem</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;pbs&quot;</span><span class="p">:</span>
+            <span class="n">mem</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:d}</span><span class="s2">mb&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">mem</span> <span class="o">*</span> <span class="mf">1024.0</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;slurm&quot;</span><span class="p">:</span>
+            <span class="n">mem</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">mem</span> <span class="o">*</span> <span class="mf">1024.0</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dep_afterok</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">dep_afterok</span> <span class="o">=</span> <span class="p">[</span><span class="n">dep_afterok</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">batch_args</span> <span class="o">=</span> <span class="n">batch_args</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">submit</span><span class="p">:</span>
+        <span class="n">delete</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c1"># nodes is a string that&#39;s not convertible to int</span>
+        <span class="k">if</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;slurm&quot;</span> <span class="ow">and</span> <span class="n">node_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">node_list</span> <span class="o">=</span> <span class="n">nodes</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">job_script</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#!/usr/bin/env bash&quot;</span><span class="p">]</span>
+
+    <span class="c1"># TODO can maybe replace manual option with some automatic detection</span>
+    <span class="k">if</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;pbs&quot;</span><span class="p">:</span>
+        <span class="c1"># create PBS header</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -N </span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">mem</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -l mem=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mem</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">nodes</span> <span class="ow">and</span> <span class="n">ppn</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -l nodes=</span><span class="si">{}</span><span class="s2">:ppn=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">ppn</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">cput</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -l cput=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_time</span><span class="p">(</span><span class="n">cput</span><span class="p">))]</span>
+        <span class="k">if</span> <span class="n">wallt</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -l walltime=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_time</span><span class="p">(</span><span class="n">wallt</span><span class="p">))]</span>
+        <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -o </span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -e </span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">queue</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -q </span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">queue</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">dep_afterok</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#PBS -W depend=afterok:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dep_afterok</span><span class="p">))]</span>
+
+    <span class="k">elif</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;slurm&quot;</span><span class="p">:</span>
+        <span class="c1"># create slurm header</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --job-name=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">mem</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --mem=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mem</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --nodes=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nodes</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">node_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">node_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">node_list</span><span class="p">)</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --nodelist=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_list</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exclude</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">exclude</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exclude</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">exclude</span> <span class="o">=</span> <span class="n">exclude</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --exclude=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exclude</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">ppn</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --ntasks-per-node=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ppn</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">omp_threads</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --cpus-per-task=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omp_threads</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">cput</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wallt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Using CPU time as wall time for slurm&quot;</span><span class="p">)</span>
+                <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --time=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_time</span><span class="p">(</span><span class="n">cput</span><span class="p">))]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Ignoring CPU time for slurm, using wall time only&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wallt</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --time=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_time</span><span class="p">(</span><span class="n">wallt</span><span class="p">))]</span>
+        <span class="k">if</span> <span class="n">nice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nice</span> <span class="o">+=</span> <span class="mi">5000</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --nice=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nice</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --output=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --error=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">queue</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --partition=</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">queue</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">dep_afterok</span><span class="p">:</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="s2">&quot;#SBATCH --dependency=afterok:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dep_afterok</span><span class="p">))</span>
+            <span class="p">]</span>
+
+    <span class="c1"># create job script preamble</span>
+    <span class="k">if</span> <span class="n">echo</span><span class="p">:</span>
+        <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;set -x&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">env_script</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">env_script</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not find environment script: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">env_script</span><span class="p">))</span>
+        <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;source </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">env_script</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">env</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;export </span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;pbs&quot;</span><span class="p">:</span>
+        <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;cd $PBS_O_WORKDIR&quot;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;slurm&quot;</span><span class="p">:</span>
+        <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;cd $SLURM_SUBMIT_DIR&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">omp_threads</span><span class="p">:</span>
+        <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;export OMP_NUM_THREADS=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omp_threads</span><span class="p">)]</span>
+
+    <span class="c1"># finally, add the command string to script</span>
+    <span class="k">if</span> <span class="n">mpi_procs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;mpirun&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cmd</span> <span class="ow">and</span> <span class="s2">&quot;mpiexec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cmd</span><span class="p">:</span>
+            <span class="n">mpi</span> <span class="o">=</span> <span class="s2">&quot;mpiexec -n </span><span class="si">{:d}</span><span class="s2"> </span><span class="si">{:s}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpi_procs</span><span class="p">,</span> <span class="n">mpi_args</span><span class="p">)</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[(</span><span class="n">mpi</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;wait&quot;</span> <span class="k">else</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">cmd</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)]</span>
+            <span class="p">)</span>
+    <span class="n">job_script</span> <span class="o">+=</span> <span class="p">[</span><span class="n">cmd</span><span class="p">]</span>
+    <span class="n">job_script</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">job_script</span><span class="p">)</span>
+
+    <span class="c1"># create and navigate to workdir</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwdu</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwdb</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">workdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">workdir</span> <span class="o">=</span> <span class="n">cwd</span>
+        <span class="n">pwd</span> <span class="o">=</span> <span class="n">workdir</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pwd</span> <span class="o">=</span> <span class="n">cwd</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">workdir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">workdir</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">workdir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">workdir</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">job_script</span><span class="p">)</span>
+
+    <span class="c1"># create and submit script</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s2">&quot;job&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;pbs&quot;</span><span class="p">:</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;.qsub&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;.slurm&quot;</span>
+    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">workdir</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="n">delete</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">job_script</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IWUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRGRP</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">submit</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;pbs&quot;</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s2">&quot;qsub&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">batch_args</span> <span class="o">+</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+                <span class="n">jobid</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># parse jobid</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[0-9]+\.[\w]+&quot;</span><span class="p">,</span> <span class="n">jobid</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;qsub error:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;slurm&quot;</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s2">&quot;sbatch&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">batch_args</span> <span class="o">+</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+                    <span class="s2">&quot;UTF-8&quot;</span>
+                <span class="p">)</span>
+                <span class="n">jobid</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># parse jobid</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[0-9]+&quot;</span><span class="p">,</span> <span class="n">jobid</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;slurm error:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="n">jobid</span> <span class="o">=</span> <span class="s2">&quot;314159test&quot;</span>
+        <span class="k">if</span> <span class="n">submit</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">delete</span><span class="p">:</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.q</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">jobid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">new</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">if</span> <span class="n">submit</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">delete</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">submit</span> <span class="ow">or</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Job ID: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">jobid</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">jobid</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="batch_group"><a class="viewcode-back" href="../autodoc.html#batch_tools.batch_group">[docs]</a><span class="k">def</span> <span class="nf">batch_group</span><span class="p">(</span><span class="n">cmds</span><span class="p">,</span> <span class="n">group_by</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create and submit SLURM or PBS job scripts for a group of similar commands. The</span>
+<span class="sd">    commands can be grouped together into larger single jobs that run them in</span>
+<span class="sd">    parallel on multiple processors on a node.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    cmds : list</span>
+<span class="sd">        The commands to run.</span>
+<span class="sd">        The commands themselves should be a string, or a list of tokens, as</span>
+<span class="sd">        per the batch_sub function</span>
+<span class="sd">    group_by : int, optional</span>
+<span class="sd">        The number of commands to group together into a single job. Does not</span>
+<span class="sd">        balance well when len(cmds)%group_by != 0</span>
+<span class="sd">        Eg. on scinet use group_by=8 to efficiently use whole nodes</span>
+<span class="sd">    serial : bool, optional</span>
+<span class="sd">        Set to True to run cmds sequentially, rather than starting them all in</span>
+<span class="sd">        parallel. This will also work with MPI/OpenMP parallel jobs.</span>
+
+<span class="sd">    Keyword arguments</span>
+<span class="sd">    -----------------</span>
+<span class="sd">    Keyword arguments are passed on to the batch_sub function.</span>
+<span class="sd">    These will be applied to EACH job. For example, using nodes=&quot;1:ppn=8&quot;</span>
+<span class="sd">    with group_by=8 and 16 elements in cmds will result in 2 jobs, each using</span>
+<span class="sd">    8 processors on 1 node.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">grouped</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">jobids</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cmds</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">group_by</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">serial</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> &amp;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="n">grouped</span> <span class="o">+=</span> <span class="p">[</span><span class="n">cmd</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">grouped</span><span class="p">)</span> <span class="o">==</span> <span class="n">group_by</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmds</span><span class="p">):</span>
+            <span class="c1"># group is full, or last command. write out a job</span>
+            <span class="k">if</span> <span class="n">group_by</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">grouped</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;wait&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jobids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="c1"># all jobs in a single group</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_grp</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">jobids</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">jobid</span> <span class="o">=</span> <span class="n">batch_sub</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">grouped</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">jobid</span><span class="p">:</span>
+                <span class="n">jobids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jobid</span><span class="p">)</span>
+            <span class="n">grouped</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">jobids</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jobids</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="JobArgumentParser"><a class="viewcode-back" href="../autodoc.html#batch_tools.JobArgumentParser">[docs]</a><span class="k">class</span> <span class="nc">JobArgumentParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mem</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outkey</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Standardized way to add job submission arguments to a script.</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ---------</span>
+<span class="sd">        name : string</span>
+<span class="sd">            This will be the name of the jobs.</span>
+<span class="sd">        mem : float</span>
+<span class="sd">            Memory per job in GB. Will scale up for grouped jobs.</span>
+<span class="sd">        time : float</span>
+<span class="sd">            Time per job in hours.</span>
+<span class="sd">        workdir : string</span>
+<span class="sd">            Fixed location to use as working directory (ie place for job</span>
+<span class="sd">            scripts and logs).</span>
+<span class="sd">        outkey : string</span>
+<span class="sd">            Alternative to workdir. The key/name of an argument added to</span>
+<span class="sd">            normal argparse that indicates output path. A &quot;logs&quot; subfolder</span>
+<span class="sd">            of that path will be used as workdir.</span>
+
+<span class="sd">        Keyword Arguments</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        Are used to fix values for parameters not needed by a script. The</span>
+<span class="sd">        corresponding command line arguments will not be added. For example,</span>
+<span class="sd">        if not using MPI, pass `mpi_procs=None` and then there will be no</span>
+<span class="sd">        `--mpi-procs` argument on the command line.</span>
+<span class="sd">        See `_opt_list` for a complete list</span>
+
+<span class="sd">        Usage Sketch</span>
+<span class="sd">        ------------</span>
+<span class="sd">        jp = sa.batch.JobArgumentParser(&quot;some_serial_job&quot;, mem=4, time=1.5,</span>
+<span class="sd">                mpi_procs=None, omp_threads=1, workdir=&quot;/path/to/logs&quot;)</span>
+<span class="sd">        AP = argparse.ArgumentParser(description=&quot;Do some job&quot;)</span>
+<span class="sd">        AP.add_argument(...)    # other non-job arguments</span>
+<span class="sd">        jp.add_arguments(AP)</span>
+<span class="sd">        args = AP.parse_args()</span>
+<span class="sd">        jp.set_job_opts(args)</span>
+<span class="sd">        jobs = [...]   # list of commands to run in jobs</span>
+<span class="sd">        jp.submit(jobs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mem</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mem</span><span class="p">)</span> <span class="k">if</span> <span class="n">mem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workdir</span> <span class="o">=</span> <span class="n">workdir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outkey</span> <span class="o">=</span> <span class="n">outkey</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_opts</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_opt_list</span><span class="p">()</span>
+        <span class="n">bad_opts</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt_list</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">bad_opts</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown options: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bad_opts</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_opt_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All options supported by this class.</span>
+<span class="sd">        Initialize from a function to conceivably allow subclass overrides.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;queue&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Queue to which to submit jobs&quot;</span><span class="p">)),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;nodes&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name or number of nodes to submit job to&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;ppn&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Processes per node. Default based on group, omp_threads, and mpi_procs&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;exclude&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Nodes to exclude from jobs&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;slurm&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Create SLURM (rather than PBS) job scripts&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;use_cput&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use CPU time rather than wall clock for jobs&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;cpu_speed&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Relative CPU speed factor, to adjust run times&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;nice&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Priority from -5000 (hi) to 5000 (lo). SLURM only&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;env_script&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Script to source in jobs to set up environment&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;test&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print options for debugging&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;omp_threads&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of OpenMP threads per process&quot;</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;mpi_procs&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of MPI processes (per node)&quot;</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of processes to group into single job&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run grouped commands serially. Works for MPI&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;procs_scale&quot;</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Scale time and memory by number of processes&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="JobArgumentParser.add_arguments"><a class="viewcode-back" href="../autodoc.html#batch_tools.JobArgumentParser.add_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">add_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_group</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add job submission arguments to an argparse.ArgumentParser.</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ---------</span>
+<span class="sd">        parser : argparse.ArgumentParser</span>
+<span class="sd">            The parser to which to add arguments. If None, a new parser will</span>
+<span class="sd">            be made and returned.</span>
+<span class="sd">        add_group : bool or string</span>
+<span class="sd">            Whether to add job submit options in an argument group.</span>
+<span class="sd">            If a string, use as description for the group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        parser, the argparse.ArgumentParser</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parser</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parser</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">add_group</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add_group</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">add_group</span> <span class="o">=</span> <span class="s2">&quot;Job Submit Options&quot;</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="n">add_group</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span>
+
+        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">opts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_opts</span><span class="p">:</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--&quot;</span> <span class="o">+</span> <span class="n">arg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parser</span></div>
+
+<div class="viewcode-block" id="JobArgumentParser.pop_job_opts"><a class="viewcode-back" href="../autodoc.html#batch_tools.JobArgumentParser.pop_job_opts">[docs]</a>    <span class="k">def</span> <span class="nf">pop_job_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_dict</span><span class="p">,</span> <span class="n">pop_submit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pop all of the job-related options from a dictionary of arguments</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        =========</span>
+<span class="sd">        args_dict : dict</span>
+<span class="sd">            The dictionary to pop from</span>
+<span class="sd">        pop_submit : bool</span>
+<span class="sd">            Whether to also pop an argument named &quot;submit&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt_list</span><span class="p">:</span>
+            <span class="n">args_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pop_submit</span><span class="p">:</span>
+            <span class="n">args_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;submit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">args_dict</span></div>
+
+<div class="viewcode-block" id="JobArgumentParser.set_job_opts"><a class="viewcode-back" href="../autodoc.html#batch_tools.JobArgumentParser.set_job_opts">[docs]</a>    <span class="k">def</span> <span class="nf">set_job_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">load_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set job submission options based on parsed arguments.</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ---------</span>
+<span class="sd">        args : argparse.Namespace or dict</span>
+<span class="sd">            The parsed command line arguments (from</span>
+<span class="sd">            argparse.ArgumentParser.parse_args()).</span>
+<span class="sd">        load_defaults : bool</span>
+<span class="sd">            Whether to automatically load the default value for options</span>
+
+<span class="sd">        Keyword arguments</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        Will be passed to update.</span>
+<span class="sd">        Can be used to override particular job submission options. Any argument</span>
+<span class="sd">        to the batch_sub or batch_group functions can be overridden in this way.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">ap</span><span class="o">.</span><span class="n">Namespace</span><span class="p">):</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_opts</span><span class="p">)</span>
+
+        <span class="c1"># get default values for any missing options</span>
+        <span class="c1"># can happen if called from python without doing argparse</span>
+        <span class="k">if</span> <span class="n">load_defaults</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">opts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+                    <span class="n">args</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;ppn&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s2">&quot;ppn&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">]</span>
+
+        <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;procs_scale&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;mpi_procs&quot;</span><span class="p">])</span>
+        <span class="n">mem_scale</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;serial&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mem</span> <span class="o">*</span> <span class="n">mem_scale</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_opts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">mem</span><span class="o">=</span><span class="n">mem</span><span class="p">,</span>
+            <span class="n">nodes</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">],</span>
+            <span class="n">exclude</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;exclude&quot;</span><span class="p">],</span>
+            <span class="n">ppn</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;ppn&quot;</span><span class="p">],</span>
+            <span class="n">queue</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">],</span>
+            <span class="n">omp_threads</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;omp_threads&quot;</span><span class="p">],</span>
+            <span class="n">mpi_procs</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;mpi_procs&quot;</span><span class="p">],</span>
+            <span class="n">env_script</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;env_script&quot;</span><span class="p">],</span>
+            <span class="n">nice</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;nice&quot;</span><span class="p">],</span>
+            <span class="n">delete</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">],</span>
+            <span class="n">submit</span><span class="o">=</span><span class="ow">not</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">],</span>
+            <span class="n">debug</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">],</span>
+            <span class="n">group_by</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">],</span>
+            <span class="n">serial</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;serial&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;slurm&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job_opts</span><span class="p">[</span><span class="s2">&quot;scheduler&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;slurm&quot;</span>
+
+        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">/</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;cpu_speed&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="mf">0.25</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="mf">0.25</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;use_cput&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job_opts</span><span class="p">[</span><span class="s2">&quot;cput&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span> <span class="o">*</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job_opts</span><span class="p">[</span><span class="s2">&quot;wallt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">workdir</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job_opts</span><span class="p">[</span><span class="s2">&quot;workdir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workdir</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">outkey</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">outd</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">outkey</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">outd</span><span class="p">):</span>
+                <span class="n">outd</span> <span class="o">=</span> <span class="n">outd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job_opts</span><span class="p">[</span><span class="s2">&quot;workdir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outd</span><span class="p">,</span> <span class="s2">&quot;logs&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="JobArgumentParser.update"><a class="viewcode-back" href="../autodoc.html#batch_tools.JobArgumentParser.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update particular job submission options.</span>
+
+<span class="sd">        Keyword arguments</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        Can be used to override particular job submission options. Any argument</span>
+<span class="sd">        to the batch_sub or batch_group functions can be overridden in this way.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="JobArgumentParser.submit"><a class="viewcode-back" href="../autodoc.html#batch_tools.JobArgumentParser.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submit jobs based on the parsed arguments. Must be called after</span>
+<span class="sd">        set_job_opts.</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ---------</span>
+<span class="sd">        jobs : string or list of strings</span>
+<span class="sd">            The job(s) to submit.</span>
+
+<span class="sd">        Keyword arguments</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        Will be passed to update.</span>
+<span class="sd">        Can be used to override particular job submission options. Any argument</span>
+<span class="sd">        to the batch or batch_group functions can be overridden in this way.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List of job IDs for submitted jobs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">jobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">jobs</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">batch_group</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">job_opts</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, A. Gambrel, A. Rahlin, C. Contaldi.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

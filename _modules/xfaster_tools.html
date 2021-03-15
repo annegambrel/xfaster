@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>xfaster_tools &mdash; xfaster 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xfaster
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html">base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#module-batch_tools">batch_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#output-class">output_class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#module-parse_tools">parse_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#xfaster-class">xfaster_class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#xfaster-exec">xfaster_exec</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc.html#module-xfaster_tools">xfaster_tools</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xfaster</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>xfaster_tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xfaster_tools</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ThreeJC_2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_camb_cl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;expand_qb&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bin_spec&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;scale_dust&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">BBody</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">ref_freq</span><span class="o">=</span><span class="mf">353.0</span><span class="p">):</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mf">1.38064852e-23</span>  <span class="c1"># Boltzmann constant</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">6.626070040e-34</span>  <span class="c1"># Planck constant</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="mf">19.6</span>
+    <span class="n">nu_ref</span> <span class="o">=</span> <span class="n">ref_freq</span> <span class="o">*</span> <span class="mf">1.0e9</span>
+    <span class="c1"># T = 2.725 #Cmb BB temp in K</span>
+    <span class="n">nu</span> <span class="o">*=</span> <span class="mf">1.0e9</span>  <span class="c1"># Ghz</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">nu</span> <span class="o">/</span> <span class="n">k</span> <span class="o">/</span> <span class="n">T</span>
+    <span class="n">x_ref</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">nu_ref</span> <span class="o">/</span> <span class="n">k</span> <span class="o">/</span> <span class="n">T</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">/</span> <span class="n">x_ref</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x_ref</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">RJ2CMB</span><span class="p">(</span><span class="n">nu_in</span><span class="p">,</span> <span class="n">ccorr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    planck_cc_gnu = {101: 1.30575, 141: 1.6835, 220: 3.2257, 359: 14.1835}</span>
+<span class="sd">    if ccorr:</span>
+<span class="sd">        if np.isscalar(nu_in):</span>
+<span class="sd">            for f, g in planck_cc_gnu.items():</span>
+<span class="sd">                if int(nu_in) == int(f):</span>
+<span class="sd">                    return g</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mf">1.38064852e-23</span>  <span class="c1"># Boltzmann constant</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">6.626070040e-34</span>  <span class="c1"># Planck constant</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="mf">2.72548</span>  <span class="c1"># Cmb BB temp in K</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="n">nu_in</span> <span class="o">*</span> <span class="mf">1.0e9</span>  <span class="c1"># Ghz</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">nu</span> <span class="o">/</span> <span class="n">k</span> <span class="o">/</span> <span class="n">T</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="scale_dust"><a class="viewcode-back" href="../autodoc.html#xfaster_tools.scale_dust">[docs]</a><span class="k">def</span> <span class="nf">scale_dust</span><span class="p">(</span><span class="n">freq0</span><span class="p">,</span> <span class="n">freq1</span><span class="p">,</span> <span class="n">ref_freq</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">delta_beta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the factor by which you must dividide the cross spectrum from maps of</span>
+<span class="sd">    frequencies freq0 and freq1 to match the dust power at ref_freq given</span>
+<span class="sd">    spectra index beta.</span>
+
+<span class="sd">    If deriv is True, return the frequency scaling at the reference beta,</span>
+<span class="sd">    and the first derivative w.r.t. beta.</span>
+
+<span class="sd">    Otherwise if delta_beta is given, return the scale factor adjusted</span>
+<span class="sd">    for a linearized offset delta_beta from the reference beta.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">freq_scale</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">RJ2CMB</span><span class="p">(</span><span class="n">freq0</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">RJ2CMB</span><span class="p">(</span><span class="n">freq1</span><span class="p">)</span>
+        <span class="o">/</span> <span class="n">RJ2CMB</span><span class="p">(</span><span class="n">ref_freq</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span>
+        <span class="o">*</span> <span class="n">BBody</span><span class="p">(</span><span class="n">freq0</span><span class="p">,</span> <span class="n">ref_freq</span><span class="o">=</span><span class="n">ref_freq</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">BBody</span><span class="p">(</span><span class="n">freq1</span><span class="p">,</span> <span class="n">ref_freq</span><span class="o">=</span><span class="n">ref_freq</span><span class="p">)</span>
+        <span class="o">*</span> <span class="p">(</span><span class="n">freq0</span> <span class="o">*</span> <span class="n">freq1</span> <span class="o">/</span> <span class="n">ref_freq</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">beta</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">deriv</span> <span class="ow">or</span> <span class="n">delta_beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">freq0</span> <span class="o">*</span> <span class="n">freq1</span> <span class="o">/</span> <span class="n">ref_freq</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">deriv</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">freq_scale</span><span class="p">,</span> <span class="n">freq_scale</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">freq_scale</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">delta_beta</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">freq_scale</span></div>
+
+
+<div class="viewcode-block" id="ThreeJC_2"><a class="viewcode-back" href="../autodoc.html#xfaster_tools.ThreeJC_2">[docs]</a><span class="k">def</span> <span class="nf">ThreeJC_2</span><span class="p">(</span><span class="n">l2i</span><span class="p">,</span> <span class="n">m2i</span><span class="p">,</span> <span class="n">l3i</span><span class="p">,</span> <span class="n">m3i</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wigner 3j symbols</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">camb</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">camb.mathutils</span> <span class="kn">import</span> <span class="n">threej</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">camb.bispectrum</span> <span class="kn">import</span> <span class="n">threej</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">threej</span><span class="p">(</span><span class="n">l2i</span><span class="p">,</span> <span class="n">l3i</span><span class="p">,</span> <span class="n">m2i</span><span class="p">,</span> <span class="n">m3i</span><span class="p">)</span>
+
+    <span class="n">lmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">l2i</span> <span class="o">-</span> <span class="n">l3i</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">m2i</span> <span class="o">+</span> <span class="n">m3i</span><span class="p">)])</span>
+    <span class="n">lmax</span> <span class="o">=</span> <span class="n">l2i</span> <span class="o">+</span> <span class="n">l3i</span>
+    <span class="n">fj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">lmax</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">fj</span><span class="p">[</span><span class="n">lmin</span> <span class="p">:</span> <span class="n">lmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span>
+    <span class="k">return</span> <span class="n">fj</span><span class="p">,</span> <span class="n">lmin</span><span class="p">,</span> <span class="n">lmax</span></div>
+
+
+<span class="c1"># base_r_plikHM_TT_lowTEB_lensing.minimum</span>
+<span class="c1">#    1  0.2226767E-01   omegabh2              \Omega_b h^2</span>
+<span class="c1">#    2  0.1184800E+00   omegach2              \Omega_c h^2</span>
+<span class="c1">#    3  0.1041032E+01   theta                 100\theta_{MC}</span>
+<span class="c1">#    4  0.6715808E-01   tau                   \tau</span>
+<span class="c1">#   17  0.3064628E+01   logA                  {\rm{ln}}(10^{10} A_s)</span>
+<span class="c1">#   18  0.9686477E+00   ns                    n_s</span>
+<span class="c1">#   21  0.3067417E-01   r                     r</span>
+<span class="c1">#    5  0.0000000E+00   omegak                \Omega_K</span>
+<span class="c1">#    6  0.6000000E-01   mnu                   \Sigma m_\nu</span>
+<span class="c1">#   51  0.6784119E+02   H0                    H_0</span>
+
+
+<div class="viewcode-block" id="get_camb_cl"><a class="viewcode-back" href="../autodoc.html#xfaster_tools.get_camb_cl">[docs]</a><span class="k">def</span> <span class="nf">get_camb_cl</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">lmax</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="s2">&quot;total&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute camb spectrum with tensors and lensing.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Tensor-to-scalar ratio</span>
+<span class="sd">    lmax : int</span>
+<span class="sd">        Maximum ell for which to compute spectra</span>
+<span class="sd">    nt : scalar, optional</span>
+<span class="sd">        Tensor spectral index.  If not supplied, assumes</span>
+<span class="sd">        slow-roll consistency relation.</span>
+<span class="sd">    spec : string, optional</span>
+<span class="sd">        Spectrum component to return.  Can be &#39;total&#39;, &#39;unlensed_total&#39;,</span>
+<span class="sd">        &#39;unlensed_scalar&#39;, &#39;lensed_scalar&#39;, &#39;tensor&#39;, &#39;lens_potential&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cls : array_like</span>
+<span class="sd">        Array of spectra of shape (lmax + 1, nspec), including the</span>
+<span class="sd">        ell*(ell+1)/2/pi scaling. Diagonal ordering (TT, EE, BB, TE).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set up a new set of parameters for CAMB</span>
+    <span class="kn">import</span> <span class="nn">camb</span>
+    <span class="n">pars</span> <span class="o">=</span> <span class="n">camb</span><span class="o">.</span><span class="n">CAMBparams</span><span class="p">()</span>
+
+    <span class="c1"># This function sets up CosmoMC-like settings, with one massive neutrino and</span>
+    <span class="c1"># helium set using BBN consistency</span>
+    <span class="n">pars</span><span class="o">.</span><span class="n">set_cosmology</span><span class="p">(</span>
+        <span class="n">H0</span><span class="o">=</span><span class="mf">67.84119</span><span class="p">,</span> <span class="n">ombh2</span><span class="o">=</span><span class="mf">0.02226767</span><span class="p">,</span> <span class="n">omch2</span><span class="o">=</span><span class="mf">0.1184800</span><span class="p">,</span> <span class="n">mnu</span><span class="o">=</span><span class="mf">0.06</span><span class="p">,</span> <span class="n">omk</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mf">0.06715808</span>
+    <span class="p">)</span>
+    <span class="n">pars</span><span class="o">.</span><span class="n">InitPower</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">As</span><span class="o">=</span><span class="mf">2.142649e-9</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="mf">0.9686477</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="n">nt</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">lmax</span> <span class="o">&lt;</span> <span class="mi">2500</span><span class="p">:</span>
+        <span class="c1"># This results in unacceptable bias. Use higher lmax, then cut it down</span>
+        <span class="n">lmax0</span> <span class="o">=</span> <span class="mi">2500</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lmax0</span> <span class="o">=</span> <span class="n">lmax</span>
+    <span class="n">pars</span><span class="o">.</span><span class="n">set_for_lmax</span><span class="p">(</span><span class="n">lmax0</span><span class="p">,</span> <span class="n">lens_potential_accuracy</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">pars</span><span class="o">.</span><span class="n">WantTensors</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">pars</span><span class="o">.</span><span class="n">do_lensing</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># calculate results for these parameters</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">camb</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+    <span class="n">powers</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_cmb_power_spectra</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="n">CMB_unit</span><span class="o">=</span><span class="s2">&quot;muK&quot;</span><span class="p">)</span>
+
+    <span class="n">totCL</span> <span class="o">=</span> <span class="n">powers</span><span class="p">[</span><span class="n">spec</span><span class="p">][:</span> <span class="n">lmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">totCL</span></div>
+
+
+<div class="viewcode-block" id="expand_qb"><a class="viewcode-back" href="../autodoc.html#xfaster_tools.expand_qb">[docs]</a><span class="k">def</span> <span class="nf">expand_qb</span><span class="p">(</span><span class="n">qb</span><span class="p">,</span> <span class="n">bin_def</span><span class="p">,</span> <span class="n">lmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expand a qb-type array to an ell-by-ell spectrum using bin_def.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    qb : array_like, (nbins,)</span>
+<span class="sd">        Array of bandpower deviations</span>
+<span class="sd">    bin_def : array_like, (nbins, 2)</span>
+<span class="sd">        Array of bin edges for each bin</span>
+<span class="sd">    lmax : int, optional</span>
+<span class="sd">        If supplied, limit the output spectrum to this value.</span>
+<span class="sd">        Otherwise the output spectrum extends to include the last bin.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cl : array_like, (lmax + 1,)</span>
+<span class="sd">        Array of expanded bandpowers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lmax</span> <span class="o">=</span> <span class="n">lmax</span> <span class="k">if</span> <span class="n">lmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">bin_def</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">cl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">lmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bin_def</span><span class="p">):</span>
+        <span class="n">cl</span><span class="p">[</span><span class="n">left</span><span class="p">:</span><span class="n">right</span><span class="p">]</span> <span class="o">=</span> <span class="n">qb</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">cl</span></div>
+
+
+<div class="viewcode-block" id="bin_spec"><a class="viewcode-back" href="../autodoc.html#xfaster_tools.bin_spec">[docs]</a><span class="k">def</span> <span class="nf">bin_spec</span><span class="p">(</span><span class="n">qb</span><span class="p">,</span> <span class="n">cls_shape</span><span class="p">,</span> <span class="n">bin_def</span><span class="p">,</span> <span class="n">inv_fish</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tophat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lfac</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute binned output spectra and covariances by averaging the shape</span>
+<span class="sd">    spectrum over each bin, and applying the appropriate `qb` bandpower</span>
+<span class="sd">    amplitude.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    qb : dict</span>
+<span class="sd">        Bandpower amplitudes for each spectrum bin.</span>
+<span class="sd">    cls_shape : dict</span>
+<span class="sd">        Shape spectrum</span>
+<span class="sd">    bin_def : dict</span>
+<span class="sd">        Bin definition dictionary</span>
+<span class="sd">    inv_fish : array_like, (nbins, nbins)</span>
+<span class="sd">        Inverse fisher matrix for computing the bin errors and covariance.  If</span>
+<span class="sd">        not supplied, these are not computed.</span>
+<span class="sd">    tophat : bool</span>
+<span class="sd">        If True, compute binned bandpowers using a tophat weight.  Otherwise a</span>
+<span class="sd">        logarithmic ell-space weighting is applied.</span>
+<span class="sd">    lfac : bool</span>
+<span class="sd">        If False, return binned C_l spectrum rather than the default D_l</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cb : dict of arrays</span>
+<span class="sd">        Binned spectrum</span>
+<span class="sd">    dcb : dict of arrays</span>
+<span class="sd">        Binned spectrum error, if `inv_fish` is not None</span>
+<span class="sd">    ellb : dict of arrays</span>
+<span class="sd">        Average bin center</span>
+<span class="sd">    cov : array_like, (nbins, nbins)</span>
+<span class="sd">        Binned spectrum covariance, if `inv_fish` is not None</span>
+<span class="sd">    qb2cb : dict</span>
+<span class="sd">        The conversion factor from `qb` to `cb`, computed by averaging over the</span>
+<span class="sd">        input shape spectrum.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">parse_tools</span> <span class="k">as</span> <span class="n">pt</span>
+
+    <span class="n">lmax</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">dict_to_arr</span><span class="p">(</span><span class="n">bin_def</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="n">qb2cb</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">ellb</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">cb</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+    <span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">fac1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ell</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">fac2</span> <span class="o">=</span> <span class="n">ell</span> <span class="o">*</span> <span class="p">(</span><span class="n">ell</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="k">if</span> <span class="n">tophat</span><span class="p">:</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">fac2</span> <span class="k">if</span> <span class="n">lfac</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fac3</span> <span class="o">=</span> <span class="n">fac1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">fac3</span><span class="p">[</span><span class="n">ell</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">fac2</span><span class="p">[</span><span class="n">ell</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">fac1</span> <span class="k">if</span> <span class="n">lfac</span> <span class="k">else</span> <span class="n">fac3</span>
+
+    <span class="n">ecls_shape</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">fac</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:</span> <span class="n">lmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cls_shape</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="n">bin_index</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">dict_to_index</span><span class="p">(</span><span class="n">bin_def</span><span class="p">)</span>
+    <span class="n">nbins</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">stag</span><span class="p">,</span> <span class="n">qb1</span> <span class="ow">in</span> <span class="n">qb</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">comp</span><span class="p">,</span> <span class="n">spec</span> <span class="o">=</span> <span class="n">stag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">comp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;cmb&quot;</span><span class="p">,</span> <span class="s2">&quot;fg&quot;</span><span class="p">]:</span>
+            <span class="k">continue</span>
+
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">ecls_shape</span><span class="p">[</span><span class="s2">&quot;fg&quot;</span> <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;fg&quot;</span> <span class="k">else</span> <span class="n">stag</span><span class="p">]</span>
+        <span class="n">ellb</span><span class="p">[</span><span class="n">stag</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">qb1</span><span class="p">)</span>
+        <span class="n">qb2cb</span><span class="p">[</span><span class="n">stag</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">qb1</span><span class="p">)</span>
+
+        <span class="n">nbins</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">nbins</span><span class="p">,</span> <span class="n">bin_index</span><span class="p">[</span><span class="n">stag</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bin_def</span><span class="p">[</span><span class="n">stag</span><span class="p">]):</span>
+            <span class="n">il</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tophat</span><span class="p">:</span>
+                <span class="n">qb2cb</span><span class="p">[</span><span class="n">stag</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="n">il</span><span class="p">])</span>
+                <span class="n">ellb</span><span class="p">[</span><span class="n">stag</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ell</span><span class="p">[</span><span class="n">il</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="n">il</span><span class="p">])</span>
+                <span class="n">qb2cb</span><span class="p">[</span><span class="n">stag</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fac3</span><span class="p">[</span><span class="n">il</span><span class="p">])</span>
+                <span class="n">av</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="n">il</span><span class="p">])</span>
+                <span class="n">ellb</span><span class="p">[</span><span class="n">stag</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">av</span> <span class="o">*</span> <span class="n">ell</span><span class="p">[</span><span class="n">il</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">av</span><span class="p">)</span>
+
+        <span class="n">cb</span><span class="p">[</span><span class="n">stag</span><span class="p">]</span> <span class="o">=</span> <span class="n">qb1</span> <span class="o">*</span> <span class="n">qb2cb</span><span class="p">[</span><span class="n">stag</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">inv_fish</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">inv_fish</span> <span class="o">=</span> <span class="n">inv_fish</span><span class="p">[:</span><span class="n">nbins</span><span class="p">,</span> <span class="p">:</span><span class="n">nbins</span><span class="p">]</span>
+        <span class="n">qb2cb_arr</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">dict_to_arr</span><span class="p">(</span><span class="n">qb2cb</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dcb_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">qb2cb_arr</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">inv_fish</span><span class="p">))</span> <span class="o">*</span> <span class="n">qb2cb_arr</span><span class="p">)</span>
+        <span class="n">dcb</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">arr_to_dict</span><span class="p">(</span><span class="n">dcb_arr</span><span class="p">,</span> <span class="n">qb2cb</span><span class="p">)</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">qb2cb_arr</span><span class="p">,</span> <span class="n">qb2cb_arr</span><span class="p">)</span> <span class="o">*</span> <span class="n">inv_fish</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dcb</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">cb</span><span class="p">,</span> <span class="n">dcb</span><span class="p">,</span> <span class="n">ellb</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">qb2cb</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, A. Gambrel, A. Rahlin, C. Contaldi.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
