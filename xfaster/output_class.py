@@ -3,8 +3,8 @@ import numpy as np
 import glob
 import copy
 import os as os
-from .base import XFasterConfig
-from . import parse_tools as pt
+from base import XFasterConfig
+from xfaster import parse_tools as pt
 
 __all__ = ["XFasterData"]
 
@@ -51,7 +51,7 @@ class XFasterData(object):
 
         Returns
         -------
-        cfg : XFasterConfig instance
+        cfg : base.XFasterConfig instance
             Run configuration for the given output tag
         """
         if tag not in self.config:
@@ -59,7 +59,7 @@ class XFasterData(object):
             if not os.path.exists(file_path):
                 raise IOError("{} does not exist".format(file_path))
 
-            cfg = XFasterConfig()
+            cfg = base.XFasterConfig()
             cfg.read(os.path.join(file_path, "config_{}.txt".format(tag)))
 
             self.config[tag] = cfg

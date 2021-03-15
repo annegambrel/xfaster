@@ -15,7 +15,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../xfaster'))
+sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, '/home/anne/.pyenv/versions/3.8.2/envs/spider/lib/python3.8/site-packages')
 
 
