@@ -225,10 +225,12 @@ log to STDOUT.</p>
 <dd><p>Update configuration options with a dictionary. Behaves like
 dict.update() for specified section but also clears options of the same
 name from the default section.</p>
-<dl class="simple">
-<dt>options<span class="classifier">dict</span></dt><dd><p>The options to update</p>
-</dd>
-<dt>section<span class="classifier">string, optional</span></dt><dd><p>Name of section to update. Default: self.default_sec</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>options</strong> (<em>dict</em>) – The options to update</p></li>
+<li><p><strong>section</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of section to update. Default: self.default_sec</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -238,8 +240,9 @@ name from the default section.</p>
 <code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">fp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#XFasterConfig.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.XFasterConfig.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write an .ini-format representation of the configuration state.
 Keys are stored alphabetically.</p>
-<dl class="simple">
-<dt>fp<span class="classifier">file object</span></dt><dd><p>If None, write to <cite>sys.stdout</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fp</strong> (<em>file object</em>) – If None, write to <cite>sys.stdout</cite>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -251,33 +254,43 @@ Keys are stored alphabetically.</p>
 <code class="sig-prename descclassname">base.</code><code class="sig-name descname">get_func_defaults</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#get_func_defaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.get_func_defaults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionary containing the default values for each keyword
 argument of the given function</p>
-<dl class="simple">
-<dt>func<span class="classifier">function or callable</span></dt><dd><p>This function’s keyword arguments will be extracted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>function</em><em> or </em><em>callable</em>) – This function’s keyword arguments will be extracted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict of kwargs and their default values</p>
 </dd>
 </dl>
-<p>dict of kwargs and their default values</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="base.extract_func_kwargs">
 <code class="sig-prename descclassname">base.</code><code class="sig-name descname">extract_func_kwargs</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">kwargs</em>, <em class="sig-param">pop=False</em>, <em class="sig-param">others_ok=True</em>, <em class="sig-param">warn=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/base.html#extract_func_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#base.extract_func_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract arguments for a given function from a kwargs dictionary</p>
-<dl class="simple">
-<dt>func<span class="classifier">function or callable</span></dt><dd><p>This function’s keyword arguments will be extracted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>function</em><em> or </em><em>callable</em>) – This function’s keyword arguments will be extracted.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Dictionary of keyword arguments from which to extract.
+NOTE: pass the kwargs dict itself, not <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</p></li>
+<li><p><strong>pop</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to pop matching arguments from kwargs.</p></li>
+<li><p><strong>others_ok</strong> (<em>bool</em>) – If False, an exception will be raised when kwargs contains keys
+that are not keyword arguments of func.</p></li>
+<li><p><strong>warn</strong> (<em>bool</em>) – If True, a warning is issued when kwargs contains keys that are not
+keyword arguments of func.  Use with <cite>others_ok=True</cite>.</p></li>
+</ul>
 </dd>
-<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Dictionary of keyword arguments from which to extract.
-NOTE: pass the kwargs dict itself, not <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
 </dd>
-<dt>pop<span class="classifier">bool, optional</span></dt><dd><p>Whether to pop matching arguments from kwargs.</p>
-</dd>
-<dt>others_ok<span class="classifier">bool</span></dt><dd><p>If False, an exception will be raised when kwargs contains keys
-that are not keyword arguments of func.</p>
-</dd>
-<dt>warn<span class="classifier">bool</span></dt><dd><p>If True, a warning is issued when kwargs contains keys that are not
-keyword arguments of func.  Use with <cite>others_ok=True</cite>.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict of items from kwargs for which func has matching keyword arguments</p>
 </dd>
 </dl>
-<p>Dict of items from kwargs for which func has matching keyword arguments</p>
 </dd></dl>
 
 </div>
