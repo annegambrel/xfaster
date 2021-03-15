@@ -2,7 +2,6 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 import numpy as np
-import camb
 from collections import OrderedDict
 
 __all__ = [
@@ -77,6 +76,7 @@ def ThreeJC_2(l2i, m2i, l3i, m3i):
     """
     Wigner 3j symbols
     """
+    import camb
     try:
         from camb.mathutils import threej
     except ImportError:
@@ -127,6 +127,7 @@ def get_camb_cl(r, lmax, nt=None, spec="total"):
         ell*(ell+1)/2/pi scaling. Diagonal ordering (TT, EE, BB, TE).
     """
     # Set up a new set of parameters for CAMB
+    import camb
     pars = camb.CAMBparams()
 
     # This function sets up CosmoMC-like settings, with one massive neutrino and
